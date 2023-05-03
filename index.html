@@ -13,6 +13,7 @@
             -webkit-box-sizing: border-box;
             -moz-box-sizing: border-box;
             box-sizing: border-box;
+            outline: var(--debug-all-outline);
         }
 
         html, body {
@@ -26,8 +27,9 @@
             text-shadow: 0 0 1px #3b9b53, 0 0 5px #54c570, 0 0 10px #54c570, 0 0 20px #54c570;
         }
 
-        pre {
-            line-height: 0.75;
+        .ascii-art {
+            font-size: 0.75em;
+            line-height: 0.75em;
             letter-spacing: -0.025em;
         }
 
@@ -43,7 +45,7 @@
         }
 
         .row {
-            width: 100%;
+            display: flex;
         }
 
         a, a:link, a:visited, a:active, a:hover {
@@ -60,7 +62,7 @@
     <div class="wrap-main">
         <div class="wrap-rows">
             <div class="row">
-<pre>
+<pre class="ascii-art">
 #######=  =#######    =##=    ######     =######  =#######=  ####### 
 ###  =###       ###  ##==##   ### =##=  ###=  === =###      ###    ==
 ###  =###       ### ###  ###= ###  =### ####      =###      ###      
