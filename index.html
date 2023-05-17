@@ -1,67 +1,208 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BRADSEC</title>
-    <style>
+  <style>
+      html, body
+      {
+        height: 100%;
+        margin: 0;
+        font-family: 'Courier New', monospace;
+        font-size: 1em;
+        line-height: 1.2em;
+        background-color: #000f00;
+        color: #00ff00;
+        text-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-            outline: var(--debug-all-outline);
-        }
+      h1, h2, h3, h4
+      {
+        color: #333333;
+      }
 
-        html, body {
-            height: 100%;
-            margin: 0;
-            font-family: 'Courier New', monospace;
-            font-size: 1em;
-            line-height: 1.2em;
-            background-color: #000000;
-            color: #33ff66;
-            text-shadow: 0 0 1px #3b9b53, 0 0 5px #54c570, 0 0 10px #54c570, 0 0 20px #54c570;
-        }
+      a, a:link, a:active, a:visited
+      {
+        color: #00ff00;
+        text-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
+        text-decoration: underline;
+        opacity: 0.65;
+      }
 
-        .ascii-art {
-            font-size: 0.75em;
-            line-height: 0.75em;
-            letter-spacing: -0.025em;
-        }
+      a:hover
+      {
+        color: #00ff00;
+        text-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
+        opacity: 1;
+      }
 
-        .wrap-main {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-        }
+      hr
+      {
+        border: 0;
+        border-top: 1px solid #00ff00;
+        box-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
+        opacity: 0.65;
+      }
 
-        .wrap-rows {
-            display: flex-wrap;
-        }
+      #ipAddress
+      {
+        margin: 20px 0;
+        font-weight: bold;
+        font-size: 1.8em;
+        line-height: 1.4em;
+        text-align: center;
+      }
 
-        .row {
-            display: flex;
-        }
+      #uaInfo
+      {
+        margin: 20px 0;
+        font-weight: bold;
+        font-size: 1.8em;
+        line-height: 1.4em;
+        text-align: center;
+      }
 
-        a, a:link, a:visited, a:active, a:hover {
-            text-decoration: none;
-            color: #33ff66;
-        }
+      header
+      {
+        height: 60px;
+      }
 
-        p {
-            margin: 10px 0;
-        }
-    </style>
+      .bold
+      {
+        font-weight: 600;
+      }
+
+      .small
+      {
+        font-size: 0.8em;
+      }
+
+      .fade
+      {
+        opacity: 0.65;
+      }
+
+      .rev {
+        padding: 5px 8px;
+        background-color: #00ff00;
+        color: #000f00;
+        opacity: 0.65;
+      }
+
+      .ascii-art
+      {
+        font-size: 0.75em;
+        line-height: 0.75em;
+        letter-spacing: -0.025em;
+      }
+
+      .box
+      {
+        margin: 0 auto;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .wrapper
+      {
+        padding: 10px;
+        margin: 0 auto;
+        max-width: 1024px;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+
+      .info-label {
+        flex: 1;
+        text-align: left;
+        margin-right: 10px;
+      }
+
+      .info-value {
+        flex: 2;
+        text-align: left;
+        overflow-wrap: break-word;
+      }
+
+      .button, button, button[type="submit"]
+      {
+        margin: 8px 4px 8px 0;
+        font-weight: 600;
+        text-align: center;
+        display: inline-block;
+        background: none;
+        color: #00ff00;
+        text-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
+        padding: 16px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .button:hover, button:hover
+      {
+        background: none;
+        color: #00ff00;
+        text-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
+      }
+
+      .button:active, button:active
+      {
+        background: none;
+        color: #00ff00;
+        text-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
+      }
+
+      .button[disabled], button[disabled], button[disabled]:hover
+      {
+        background: none;
+        color: #00ff00;
+        text-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
+        opacity: 0.65;
+        cursor: not-allowed;
+      }
+
+      .btn-outline, .btn-outline:hover, .btn-outline:hover
+      {
+        background: none;
+        color: #00ff00;
+        text-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
+        border: 2px solid #00ff00;
+        padding: 12px 20px;
+      }
+
+      button,input,optgroup,select,textarea
+      {
+        font-family: inherit;
+        font-size: 100%;
+        line-height: 1.15;
+        margin: 0;
+      }
+
+      button,input
+      {
+        overflow: visible;
+      }
+
+      button,select
+      {
+        text-transform: none;
+      }
+
+      button,[type="button"],[type="reset"],[type="submit"]
+      {
+        -webkit-appearance: button;
+      }
+  </style>
 </head>
 <body>
-    <div class="wrap-main">
-        <div class="wrap-rows">
-            <div class="row">
+    <div class="wrapper">
+        <header>
 <pre class="ascii-art">
 ########  ########    #####   ######     #######  #########  #######  
 ###   ###       ###  #######  ###  ###  ###   ### ###       ###    ## 
@@ -69,58 +210,129 @@
 ########     #####  ###   ### ###   ###   ######  #######   ###       
 ###   ###     ####  ######### ###   ###       ### ###       ###       
 ###   ###       ### ###   ### ###  ###  ###   ### ###       ###    ## 
-########  ####  ### ###   ### ######     #######  #########  ####### </pre>
-</a></div>
-    </div>
-    <script>
-        const preElement = document.querySelector("pre");
-        const originalAsciiArt = preElement.innerHTML;
-        const characterDelay = 10;
-        const cursorCharacter = "_";
-        const cursorBlinkInterval = 500;
-      
-        function clearAscii() {
-          preElement.innerHTML = "";
-        }
-      
-        function buildAscii() {
-          let newAscii = originalAsciiArt.split("");
-          for (let i = 0; i <= newAscii.length; i++) {
-            setTimeout(() => {
-              if (i < newAscii.length) {
-                if (newAscii[i] === "\n") {
-                  preElement.innerHTML = preElement.innerHTML.slice(0, -1) + "\n" + cursorCharacter;
-                } else {
-                  preElement.innerHTML = preElement.innerHTML.slice(0, -1) + newAscii[i] + cursorCharacter;
-                }
-              } else {
-                preElement.innerHTML = preElement.innerHTML.slice(0, -1);
-                startCursorBlinking();
-              }
-            }, characterDelay * i);
-          }
-        }
-      
-        function startCursorBlinking() {
-          let cursorVisible = false;
-          setInterval(() => {
-            cursorVisible = !cursorVisible;
-            if (cursorVisible) {
-              preElement.innerHTML += cursorCharacter;
-            } else {
-              preElement.innerHTML = preElement.innerHTML.slice(0, -1);
-            }
-          }, cursorBlinkInterval);
-        }
-      
-        function initializeAsciiArt() {
-          clearAscii();
-          setTimeout(() => {
-            buildAscii();
-          }, characterDelay);
-        }
-      
-        initializeAsciiArt();
-      </script>
+########  ####  ### ###   ### ######     #######  #########  ####### 
+</pre>
+        </header>
+        <main>
+          <div id="ipInfo"></div>
+          <div class="box"><button id="getIp">Fetch IP info (uses ipapi.co)</button></div>
+            <p class="fade">Detected browser information...</p>
+            <div id="uaInfo"></div>
+            <div id="clientInfo"></div>
+            <hr>
+        </main>
+        <footer>
+            <p class="small">With the exception of the IP address information (which uses a third-party API), other information is made available by your web browser and displayed using JavaScript. Source code for this page can be found at <a href="https://github.com/bradsec/bradsec/blob/main/index.html">github.com/bradsec</a>.</p>
+        </footer>
+
+  <script>
+function addInfo(infoDiv, label, value) {
+    const divRow = document.createElement('div');
+    divRow.classList.add('info-row');
+
+    const infoLabel = document.createElement('strong');
+    infoLabel.classList.add('info-label');
+    infoLabel.textContent = `${label}:`;
+
+    const infoValue = document.createElement('span');
+    infoValue.classList.add('info-value', 'fade');
+    infoValue.textContent = value;
+
+    divRow.appendChild(infoLabel);
+    divRow.appendChild(infoValue);
+    infoDiv.appendChild(divRow);
+}
+
+
+
+    function getIPAddress() {
+      return fetch('https://ipapi.co/json')
+        .then(response => response.json())
+        // .then(data => data.ip)
+        .then((data) => {
+            return ipInfoTemplate(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          return 'N/A';
+        });
+    }
+
+    // Template for IP address info data.
+    function ipInfoTemplate(data) {
+    let resultData = "";
+      resultData += '<p class="fade">Detected IP address information...</p>';
+      if (data.ip) {
+        var ipAddress = data.ip;
+        var ipCountry = data.country_name;
+        var ipCity = data.city;
+        var ipRegion = data.region;
+        var ipProvider = data.org;
+      }
+      resultData += `
+        ${ipAddress ? `<div id="ipAddress"><div class="info-row"><strong class="info-label">IP Address: </strong><span class="info-value">${ipAddress}</span></div></div>` : ""}
+        ${ipCity ? `<div class="info-row"><strong class="info-label">City: </strong><span class="info-value fade">${ipCity}</span></div>` : ""}
+        ${ipRegion ? `<div class="info-row"><strong class="info-label">Region: </strong><span class="info-value fade">${ipRegion}</span></div>` : ""}
+        ${ipCountry ? `<div class="info-row"><strong class="info-label">Country: </strong><span class="info-value fade">${ipCountry}</span></div>` : ""}
+        ${ipProvider ? `<div class="info-row"><strong class="info-label">Provider: </strong><span class="info-value fade">${ipProvider}</span></div>` : ""}`;
+      return resultData;
+    }
+
+    async function getClientInfo() {
+      const infoDiv = document.getElementById('clientInfo');
+      const userAgent = navigator.userAgent;
+      const platform = navigator.platform;
+      const language = navigator.language;
+      const screenWidth = window.screen.width;
+      const screenHeight = window.screen.height;
+      const colorDepth = window.screen.colorDepth;
+      const currentUrl = window.location.href;
+      const referrerUrl = document.referrer;
+      const cookiesEnabled = navigator.cookieEnabled;
+      const onlineStatus = navigator.onLine;
+      const pluginsCount = navigator.plugins.length;
+      const javaEnabled = navigator.javaEnabled();
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const localStorage = !!window.localStorage;
+      const sessionStorage = !!window.sessionStorage;
+      const touchSupport = 'ontouchstart' in window || window.DocumentTouch && document instanceof DocumentTouch;
+      const cpuCores = navigator.hardwareConcurrency || 'N/A';
+      const visibilityState = document.visibilityState;
+
+      document.getElementById('uaInfo').innerHTML = `<div class="info-row"><strong class="info-label">User-Agent: </strong><span class="info-value">${userAgent}</div>`;
+      addInfo(infoDiv, 'Platform', platform);
+      addInfo(infoDiv, 'Language', language);
+      addInfo(infoDiv, 'Screen Width', screenWidth);
+      addInfo(infoDiv, 'Screen Height', screenHeight);
+      addInfo(infoDiv, 'Color Depth', colorDepth + ' bits');
+      addInfo(infoDiv, 'Current URL', currentUrl);
+      addInfo(infoDiv, 'Referrer URL', referrerUrl);
+      addInfo(infoDiv, 'Cookies Enabled', cookiesEnabled);
+      addInfo(infoDiv, 'Online Status', onlineStatus);
+      addInfo(infoDiv, 'Number of Plugins', pluginsCount);
+      addInfo(infoDiv, 'Java Enabled', javaEnabled);
+      addInfo(infoDiv, 'Timezone', timezone);
+      addInfo(infoDiv, 'Local Storage Support', localStorage);
+      addInfo(infoDiv, 'Session Storage Support', sessionStorage);
+      addInfo(infoDiv, 'Touch Support', touchSupport);
+      addInfo(infoDiv, 'CPU Cores', cpuCores);
+      addInfo(infoDiv, 'Page Visibility', visibilityState);
+    }
+
+    document.getElementById('getIp').addEventListener('click', async function() {
+    const button = document.getElementById('getIp');
+    button.disabled = true; // Disable the button
+
+    const getIpInfo = await getIPAddress();
+    document.getElementById('ipInfo').innerHTML = `${getIpInfo}`;
+    button.remove();
+
+    const ipInfoDiv = document.getElementById('ipInfo');
+    ipInfoDiv.style.display = 'block';
+    });
+
+    getClientInfo();
+  </script>
+  </div>
 </body>
 </html>
