@@ -5,7 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BRADSEC</title>
   <style>
-      html, body
+
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+      }
+
+      html {
+          min-height: 100%;
+      }
+      body
       {
         height: 100%;
         margin: 0;
@@ -15,6 +28,11 @@
         background-color: #000f00;
         color: #00ff00;
         text-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
       }
 
       h1, h2, h3, h4
@@ -41,7 +59,7 @@
       {
         border: 0;
         border-top: 1px solid #00ff00;
-        box-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
+        box-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570;
         opacity: 0.65;
       }
 
@@ -49,8 +67,6 @@
       {
         margin: 20px 0;
         font-weight: bold;
-        font-size: 1.8em;
-        line-height: 1.4em;
         text-align: center;
       }
 
@@ -58,14 +74,24 @@
       {
         margin: 20px 0;
         font-weight: bold;
-        font-size: 1.8em;
-        line-height: 1.4em;
         text-align: center;
+      }
+
+      header, main, footer {
+        margin: 0 auto;
+        width: 100%;
+        max-width: 1200px;
+        padding: 15px;
       }
 
       header
       {
         height: 60px;
+      }
+
+      main {
+        position: relative;
+        margin-bottom: 20px;
       }
 
       .bold
@@ -106,9 +132,11 @@
 
       .wrapper
       {
-        padding: 10px;
-        margin: 0 auto;
-        max-width: 1024px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        min-height: 100vh;
+        width: 100%;
       }
 
       .info-row {
@@ -120,13 +148,16 @@
       .info-label {
         flex: 1;
         text-align: left;
-        margin-right: 10px;
       }
 
       .info-value {
-        flex: 2;
+        flex: 1;
         text-align: left;
         overflow-wrap: break-word;
+        word-wrap: break-word;
+        -ms-word-break: break-all;
+        word-break: break-all;
+        word-break: break-word;
       }
 
       .button, button, button[type="submit"]
@@ -140,7 +171,6 @@
         text-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
         padding: 16px 24px;
         border: none;
-        border-radius: 4px;
         cursor: pointer;
       }
 
@@ -173,6 +203,7 @@
         color: #00ff00;
         text-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
         border: 2px solid #00ff00;
+        box-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570;
         padding: 12px 20px;
       }
 
@@ -215,7 +246,7 @@
         </header>
         <main>
           <div id="ipInfo"></div>
-          <div class="box"><button id="getIp">Fetch IP info (uses ipapi.co)</button></div>
+          <div class="box"><button id="getIp" class="btn-outline">Fetch IP info? (uses ipapi.co)</button></div>
             <p class="fade">Detected browser information...</p>
             <div id="uaInfo"></div>
             <div id="clientInfo"></div>
