@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BRADSEC</title>
   <style>
-
       * {
           margin: 0;
           padding: 0;
@@ -23,7 +22,7 @@
         height: 100%;
         margin: 0;
         font-family: 'Courier New', monospace;
-        font-size: 1em;
+        font-size: 14px;
         line-height: 1.2em;
         background-color: #000f00;
         color: #00ff00;
@@ -58,13 +57,15 @@
       hr
       {
         border: 0;
-        border-top: 1px solid #00ff00;
+        border-top: 1px dashed #00ff00;
         box-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570;
         opacity: 0.65;
       }
 
       #ipAddress
       {
+        font-size: 20px;
+        line-height: 1.4em;
         margin: 20px 0;
         font-weight: bold;
         text-align: center;
@@ -72,12 +73,15 @@
 
       #uaInfo
       {
+        font-size: 20px;
+        line-height: 1.4em;
         margin: 20px 0;
         font-weight: bold;
         text-align: center;
       }
 
       header, main, footer {
+        position: relative;
         margin: 0 auto;
         width: 100%;
         max-width: 1200px;
@@ -86,11 +90,7 @@
 
       header
       {
-        height: 70px;
-      }
-
-      main {
-        position: relative;
+        height: 50px;
         margin-bottom: 20px;
       }
 
@@ -118,9 +118,9 @@
 
       .ascii-art
       {
-        font-size: 0.75em;
-        line-height: 0.75em;
-        letter-spacing: -0.025em;
+        font-size: 6px;
+        line-height: 6px;
+        letter-spacing: -1px;
       }
 
       .box
@@ -241,19 +241,18 @@
 ########     #####  ###   ### ###   ###   ######  #######   ###       
 ###   ###     ####  ######### ###   ###       ### ###       ###       
 ###   ###       ### ###   ### ###  ###  ###   ### ###       ###    ## 
-########  ####  ### ###   ### ######     #######  #########  ####### 
-</pre>
+########  ####  ### ###   ### ######     #######  #########  ####### </pre>
         </header>
         <main>
           <div id="ipInfo"></div>
-          <div class="box"><button id="getIp" class="btn-outline">Fetch IP info? (uses ipapi.co)</button></div>
+          <div class="box"><button id="getIp">Fetch IP info?_</button></div>
             <p class="fade">Detected browser information...</p>
             <div id="uaInfo"></div>
             <div id="clientInfo"></div>
             <hr>
         </main>
         <footer>
-            <p class="small">With the exception of the IP address information (which uses a third-party API), other information is made available by your web browser and displayed using JavaScript. Source code for this page can be found at <a href="https://github.com/bradsec/bradsec/blob/main/index.html">github.com/bradsec</a>.</p>
+            <p class="small">With the exception of the IP address information (which uses a third-party API from ipapi.co), other information is made available by your web browser and displayed using JavaScript. Source code for this page can be found at <a href="https://github.com/bradsec/bradsec/blob/main/index.html">github.com/bradsec</a>.</p>
         </footer>
 
   <script>
@@ -301,7 +300,7 @@ function addInfo(infoDiv, label, value) {
         var ipProvider = data.org;
       }
       resultData += `
-        ${ipAddress ? `<div id="ipAddress"><div class="info-row"><strong class="info-label">IP Address: </strong><span class="info-value">${ipAddress}</span></div></div>` : ""}
+        ${ipAddress ? `<div id="ipAddress">${ipAddress}</div>` : ""}
         ${ipCity ? `<div class="info-row"><strong class="info-label">City: </strong><span class="info-value fade">${ipCity}</span></div>` : ""}
         ${ipRegion ? `<div class="info-row"><strong class="info-label">Region: </strong><span class="info-value fade">${ipRegion}</span></div>` : ""}
         ${ipCountry ? `<div class="info-row"><strong class="info-label">Country: </strong><span class="info-value fade">${ipCountry}</span></div>` : ""}
@@ -330,7 +329,7 @@ function addInfo(infoDiv, label, value) {
       const cpuCores = navigator.hardwareConcurrency || 'N/A';
       const visibilityState = document.visibilityState;
 
-      document.getElementById('uaInfo').innerHTML = `<div class="info-row"><strong class="info-label">User-Agent: </strong><span class="info-value">${userAgent}</div>`;
+      document.getElementById('uaInfo').innerHTML = `<div id="uaInfo">${userAgent}</div>`;
       addInfo(infoDiv, 'Platform', platform);
       addInfo(infoDiv, 'Language', language);
       addInfo(infoDiv, 'Screen Width', screenWidth);
@@ -364,6 +363,56 @@ function addInfo(infoDiv, label, value) {
 
     getClientInfo();
   </script>
+      <script>
+        const preElement = document.querySelector("pre");
+        const originalAsciiArt = preElement.innerHTML;
+        const characterDelay = 10;
+        const cursorCharacter = "_";
+        const cursorBlinkInterval = 500;
+      
+        function clearAscii() {
+          preElement.innerHTML = "";
+        }
+      
+        function buildAscii() {
+          let newAscii = originalAsciiArt.split("");
+          for (let i = 0; i <= newAscii.length; i++) {
+            setTimeout(() => {
+              if (i < newAscii.length) {
+                if (newAscii[i] === "\n") {
+                  preElement.innerHTML = preElement.innerHTML.slice(0, -1) + "\n" + cursorCharacter;
+                } else {
+                  preElement.innerHTML = preElement.innerHTML.slice(0, -1) + newAscii[i] + cursorCharacter;
+                }
+              } else {
+                preElement.innerHTML = preElement.innerHTML.slice(0, -1);
+                startCursorBlinking();
+              }
+            }, characterDelay * i);
+          }
+        }
+      
+        function startCursorBlinking() {
+          let cursorVisible = false;
+          setInterval(() => {
+            cursorVisible = !cursorVisible;
+            if (cursorVisible) {
+              preElement.innerHTML += cursorCharacter;
+            } else {
+              preElement.innerHTML = preElement.innerHTML.slice(0, -1);
+            }
+          }, cursorBlinkInterval);
+        }
+      
+        function initializeAsciiArt() {
+          clearAscii();
+          setTimeout(() => {
+            buildAscii();
+          }, characterDelay);
+        }
+      
+        initializeAsciiArt();
+      </script>
   </div>
 </body>
 </html>
