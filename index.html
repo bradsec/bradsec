@@ -23,7 +23,7 @@
         margin: 0;
         font-family: 'Courier New', monospace;
         font-size: 14px;
-        line-height: 1.2em;
+        line-height: 1.4em;
         background-color: #000f00;
         color: #00ff00;
         text-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
@@ -56,28 +56,34 @@
 
       hr
       {
+        margin: 20px 0;
         border: 0;
         border-top: 1px dashed #00ff00;
         box-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570;
         opacity: 0.65;
       }
 
-      #ipAddress
-      {
-        font-size: 20px;
-        line-height: 1.4em;
-        margin: 20px 0;
-        font-weight: bold;
-        text-align: center;
+      .blink {
+        content: "";
+        display: inline-block;
+        width: 10px;
+        height: 14px;
+        -webkit-animation: blink 1s step-end infinite;
+        animation: blink 1s step-end infinite;
+        animation-delay: 8s;
+        -webkit-animation-delay: 8s;
       }
 
-      #uaInfo
-      {
-        font-size: 20px;
-        line-height: 1.4em;
-        margin: 20px 0;
-        font-weight: bold;
-        text-align: center;
+      @-webkit-keyframes blink {
+        0% { opacity: 1.0; }
+        50% { opacity: 0.0; }
+        100% { opacity: 1.0; }
+      }
+
+      @keyframes blink {
+        0% { opacity: 1.0; }
+        50% { opacity: 0.0; }
+        100% { opacity: 1.0; }
       }
 
       header, main, footer {
@@ -90,8 +96,11 @@
 
       header
       {
-        height: 50px;
-        margin-bottom: 20px;
+        height: 70px;
+      }
+
+      footer {
+        padding-top: 0;
       }
 
       .bold
@@ -107,6 +116,18 @@
       .fade
       {
         opacity: 0.65;
+      }
+
+      .mt20 {
+        margin-top: 20px;
+      }
+
+      .mb20 {
+        margin-bottom: 20px;
+      }
+
+      .copyToClipboard {
+        display: inline-block;
       }
 
       .rev {
@@ -142,7 +163,7 @@
       .info-row {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
       }
 
       .info-label {
@@ -151,7 +172,7 @@
       }
 
       .info-value {
-        flex: 1;
+        flex: 2;
         text-align: left;
         overflow-wrap: break-word;
         word-wrap: break-word;
@@ -164,12 +185,13 @@
       {
         margin: 8px 4px 8px 0;
         font-weight: 600;
-        text-align: center;
+        text-align: left;
         display: inline-block;
         background: none;
         color: #00ff00;
         text-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
         padding: 16px 24px;
+        padding-left: 0px;
         border: none;
         cursor: pointer;
       }
@@ -197,16 +219,6 @@
         cursor: not-allowed;
       }
 
-      .btn-outline, .btn-outline:hover, .btn-outline:hover
-      {
-        background: none;
-        color: #00ff00;
-        text-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570, 0 0 5px #54c570, 0 0 24px #54c570;
-        border: 2px solid #00ff00;
-        box-shadow: 0 0 1px #3b9b53, 0 0 3px #54c570;
-        padding: 12px 20px;
-      }
-
       button,input,optgroup,select,textarea
       {
         font-family: inherit;
@@ -229,12 +241,81 @@
       {
         -webkit-appearance: button;
       }
+
+      /* Credit for CRT CSS style effect https://codepen.io/rafael_madureira/pen/Rwrqvbe */
+      .crt {
+        background: #05321e;
+        background-image: radial-gradient(ellipse, #05321e 0%, #050505 90%);
+        animation: txt-shadow 1.6s infinite;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+      }
+
+      .crt::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%,
+              rgba(0, 0, 0, 0.25) 50%),
+              linear-gradient(90deg, rgba(255, 0, 0, 0.06),
+              rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+      }
+
+      .crt::after {
+          content: " ";
+          display: block;
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          background: rgba(18, 16, 16, 0.1);
+          opacity: 0;
+          z-index: 2;
+          pointer-events: none;
+          animation: flicker 0.15s infinite;
+      }
+
+        @keyframes flicker {
+          0%    { opacity: 0.27861; }
+          5%    { opacity: 0.34769; }
+          10%   { opacity: 0.23604; }
+          15%   { opacity: 0.90626; }
+          20%   { opacity: 0.18128; }
+          25%   { opacity: 0.83891; }
+          30%   { opacity: 0.65583; }
+          35%   { opacity: 0.67807; }
+          40%   { opacity: 0.26559; }
+          45%   { opacity: 0.84693; }
+          50%   { opacity: 0.96019; }
+          55%   { opacity: 0.08594; }
+          60%   { opacity: 0.20313; }
+          65%   { opacity: 0.71988; }
+          70%   { opacity: 0.53455; }
+          75%   { opacity: 0.37288; }
+          80%   { opacity: 0.71428; }
+          85%   { opacity: 0.70419; }
+          90%   { opacity: 0.70030; }
+          95%   { opacity: 0.36108; }
+          100%  { opacity: 0.24387; }
+        }
+
   </style>
 </head>
 <body>
     <div class="wrapper">
         <header>
-<pre class="ascii-art">
+<pre class="ascii-art typewriter">
 ########  ########    #####   ######     #######  #########  #######  
 ###   ###       ###  #######  ###  ###  ###   ### ###       ###    ## 
 ###   ###       ### ###   ### ###   ### ###       ###       ###       
@@ -245,16 +326,16 @@
         </header>
         <main>
           <div id="ipInfo"></div>
-          <div class="box"><button id="getIp">Fetch IP info?_</button></div>
-            <p class="fade">Detected browser information...</p>
+          <button id="getIp">Fetch IP information from ipapi.co?<span class="blink">_</span></button>
+            <p class="fade mt20 mb20">Detected browser information...</p>
             <div id="uaInfo"></div>
             <div id="clientInfo"></div>
             <hr>
         </main>
         <footer>
-            <p class="small">With the exception of the IP address information (which uses a third-party API from ipapi.co), other information is made available by your web browser and displayed using JavaScript. Source code for this page can be found at <a href="https://github.com/bradsec/bradsec/blob/main/index.html">github.com/bradsec</a>.</p>
+            <p>With the exception of the IP address information (which uses a third-party API from <a href="https://ipapi.co" target="_blank">ipapi.co</a>), other information is made available by your web browser and displayed using JavaScript. Source code for this page can be found at <a href="https://github.com/bradsec/bradsec/blob/main/index.html">github.com/bradsec</a>.</p>
         </footer>
-
+        
   <script>
 function addInfo(infoDiv, label, value) {
     const divRow = document.createElement('div');
@@ -273,8 +354,6 @@ function addInfo(infoDiv, label, value) {
     infoDiv.appendChild(divRow);
 }
 
-
-
     function getIPAddress() {
       return fetch('https://ipapi.co/json')
         .then(response => response.json())
@@ -291,7 +370,7 @@ function addInfo(infoDiv, label, value) {
     // Template for IP address info data.
     function ipInfoTemplate(data) {
     let resultData = "";
-      resultData += '<p class="fade">Detected IP address information...</p>';
+      resultData += '<p class="fade mb20">Detected IP address information...</p>';
       if (data.ip) {
         var ipAddress = data.ip;
         var ipCountry = data.country_name;
@@ -300,7 +379,7 @@ function addInfo(infoDiv, label, value) {
         var ipProvider = data.org;
       }
       resultData += `
-        ${ipAddress ? `<div id="ipAddress">${ipAddress}</div>` : ""}
+        ${ipAddress ? `<div class="info-row"><strong class="info-label">IP Address: </strong><span class="info-value copyToClipboard">${ipAddress}</div>` : ""}
         ${ipCity ? `<div class="info-row"><strong class="info-label">City: </strong><span class="info-value fade">${ipCity}</span></div>` : ""}
         ${ipRegion ? `<div class="info-row"><strong class="info-label">Region: </strong><span class="info-value fade">${ipRegion}</span></div>` : ""}
         ${ipCountry ? `<div class="info-row"><strong class="info-label">Country: </strong><span class="info-value fade">${ipCountry}</span></div>` : ""}
@@ -329,7 +408,7 @@ function addInfo(infoDiv, label, value) {
       const cpuCores = navigator.hardwareConcurrency || 'N/A';
       const visibilityState = document.visibilityState;
 
-      document.getElementById('uaInfo').innerHTML = `<div id="uaInfo">${userAgent}</div>`;
+      document.getElementById('uaInfo').innerHTML = `<div class="info-row"><strong class="info-label">User-Agent:</strong><span class="info-value copyToClipboard">${userAgent}</span></div>`;
       addInfo(infoDiv, 'Platform', platform);
       addInfo(infoDiv, 'Language', language);
       addInfo(infoDiv, 'Screen Width', screenWidth);
@@ -362,57 +441,126 @@ function addInfo(infoDiv, label, value) {
     });
 
     getClientInfo();
+
+    // Copy to clipboard
+    function fallbackCopyTextToClipboard(text) {
+  var textArea = document.createElement("textarea");
+  textArea.value = text;
+
+  // Workaround for some mobile device copy to clipboard issues
+  // Ensure the textarea element is not visible.
+  textArea.style.position='fixed';
+  textArea.style.top=0;
+  textArea.style.left=0;
+  textArea.style.width='2em';
+  textArea.style.height='2em';
+  textArea.style.padding=0;
+  textArea.style.border='none';
+  textArea.style.outline='none';
+  textArea.style.boxShadow='none';
+  textArea.style.background='transparent';
+
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    console.log('Fallback: Copying text command was ' + msg);
+  } catch (err) {
+    console.error('Fallback: Oops, unable to copy', err);
+  }
+
+  document.body.removeChild(textArea);
+}
+
+// Main copy to clipboard function
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.body.addEventListener('click', (event) => {
+    if (event.target.matches('.copyToClipboard')) {
+      const text = event.target.textContent;
+      const originalText = event.target.textContent;
+      event.target.textContent = 'Copied';
+      setTimeout(() => {
+        event.target.textContent = originalText;
+      }, 1000);
+      if (!navigator.clipboard) {
+        fallbackCopyTextToClipboard(text);
+        return;
+      }
+      navigator.clipboard.writeText(text).then(() => {}, (err) => {
+        console.error('Could not copy text: ', err);
+      });
+    }
+  });
+});
   </script>
       <script>
-        const preElement = document.querySelector("pre");
-        const originalAsciiArt = preElement.innerHTML;
-        const characterDelay = 10;
-        const cursorCharacter = "_";
-        const cursorBlinkInterval = 500;
-      
-        function clearAscii() {
-          preElement.innerHTML = "";
+        // Typewriter text
+        async function typeCharacters(element) {
+          const originalText = element.textContent;
+          const characterDelay = 10;
+          const cursorCharacter = "_";
+          const cursorBlinkInterval = 500;
+          const cursorStopBlinkDelay = 1000;
+
+          element.style.visibility = 'hidden';
+
+          function clearText() {
+            element.textContent = "";
+            element.style.visibility = 'visible';
+          }
+
+          function typeCharacter(character) {
+            return new Promise((resolve) => {
+              setTimeout(() => {
+                element.textContent += character;
+                resolve();
+              }, characterDelay);
+            });
+          }
+
+          async function typeText() {
+            clearText();
+            for (const character of originalText) {
+              await typeCharacter(character);
+            }
+          }
+
+          function blinkCursor() {
+            if (element.textContent.endsWith(cursorCharacter)) {
+              element.textContent = element.textContent.slice(0, -1);
+            } else {
+              element.textContent += cursorCharacter;
+            }
+          }
+
+          function stopBlinkCursor() {
+            if (element.textContent.endsWith(cursorCharacter)) {
+              element.textContent = element.textContent.slice(0, -1);
+            }
+            clearInterval(cursorInterval);
+          }
+
+          await typeText();
+
+          const cursorInterval = setInterval(blinkCursor, cursorBlinkInterval);
+
+          setTimeout(stopBlinkCursor, cursorStopBlinkDelay);
         }
-      
-        function buildAscii() {
-          let newAscii = originalAsciiArt.split("");
-          for (let i = 0; i <= newAscii.length; i++) {
-            setTimeout(() => {
-              if (i < newAscii.length) {
-                if (newAscii[i] === "\n") {
-                  preElement.innerHTML = preElement.innerHTML.slice(0, -1) + "\n" + cursorCharacter;
-                } else {
-                  preElement.innerHTML = preElement.innerHTML.slice(0, -1) + newAscii[i] + cursorCharacter;
-                }
-              } else {
-                preElement.innerHTML = preElement.innerHTML.slice(0, -1);
-                startCursorBlinking();
-              }
-            }, characterDelay * i);
+
+        const typewriterElements = Array.from(document.querySelectorAll(".typewriter"));
+
+        async function typeAll() {
+          for (const element of typewriterElements) {
+            await typeCharacters(element);
           }
         }
-      
-        function startCursorBlinking() {
-          let cursorVisible = false;
-          setInterval(() => {
-            cursorVisible = !cursorVisible;
-            if (cursorVisible) {
-              preElement.innerHTML += cursorCharacter;
-            } else {
-              preElement.innerHTML = preElement.innerHTML.slice(0, -1);
-            }
-          }, cursorBlinkInterval);
-        }
-      
-        function initializeAsciiArt() {
-          clearAscii();
-          setTimeout(() => {
-            buildAscii();
-          }, characterDelay);
-        }
-      
-        initializeAsciiArt();
+
+        typeAll();
       </script>
+      <div class="crt"></div>
   </div>
 </body>
 </html>
