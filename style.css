@@ -1,0 +1,255 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  background-color: black;
+  background-image: linear-gradient(rgba(31, 31, 31, 0.8), #222222 10%);
+  background-size: 100% 2px, 3px 100%;
+  height: 100vh;
+  margin: 0;
+  color: #70f77b;
+  font-family: Inconsolata, 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.4em;
+  text-shadow: 0 0 13px #27d66d;
+  filter: blur(0.5px);
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15) 3px, transparent 3px, transparent 6px);
+  pointer-events: none;
+  animation: flicker 0.15s infinite;
+}
+
+@keyframes flicker {
+  0%    { opacity: 0.27861; }
+  5%    { opacity: 0.34769; }
+  10%   { opacity: 0.23604; }
+  15%   { opacity: 0.90626; }
+  20%   { opacity: 0.18128; }
+  25%   { opacity: 0.83891; }
+  30%   { opacity: 0.65583; }
+  35%   { opacity: 0.67807; }
+  40%   { opacity: 0.26559; }
+  45%   { opacity: 0.84693; }
+  50%   { opacity: 0.96019; }
+  55%   { opacity: 0.08594; }
+  60%   { opacity: 0.20313; }
+  65%   { opacity: 0.71988; }
+  70%   { opacity: 0.53455; }
+  75%   { opacity: 0.37288; }
+  80%   { opacity: 0.71428; }
+  85%   { opacity: 0.70419; }
+  90%   { opacity: 0.70030; }
+  95%   { opacity: 0.36108; }
+  100%  { opacity: 0.24387; }
+}
+
+a, a:link, a:active, a:visited
+{
+  color: #70f77b;
+  text-decoration: underline;
+  opacity: 1;
+}
+
+a:hover
+{
+  color: #70f77b;
+  opacity: 1;
+}
+
+hr
+{
+  margin: 20px 0 10px 0;
+  border: 0;
+  border-top: 1px dashed #70f77b;
+  opacity: 0.65;
+}
+
+.blink {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 14px;
+  -webkit-animation: blink 1s step-end infinite;
+  animation: blink 1s step-end infinite;
+  animation-delay: 8s;
+  -webkit-animation-delay: 8s;
+}
+
+@-webkit-keyframes blink {
+  0% { opacity: 1.0; }
+  50% { opacity: 0.0; }
+  100% { opacity: 1.0; }
+}
+
+@keyframes blink {
+  0% { opacity: 1.0; }
+  50% { opacity: 0.0; }
+  100% { opacity: 1.0; }
+}
+
+header, main, footer {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
+  padding: 15px;
+}
+
+header {
+  font-weight: 600;
+  padding-bottom: 0;
+}
+
+main {
+  border: 0px solid red;
+}
+
+footer {
+  padding-top: 0;
+}
+
+.bold
+{
+  font-weight: 600;
+}
+
+.small
+{
+  font-size: 0.8em;
+}
+
+.fade
+{
+  opacity: 0.65;
+}
+
+.mt20 {
+  margin-top: 20px;
+}
+
+.mb20 {
+  margin-bottom: 20px;
+}
+
+.copyToClipboard {
+  display: inline-block;
+}
+
+.rev {
+  padding: 5px 8px;
+  background-color: #70f77b;
+  color: #000f00;
+  opacity: 0.65;
+}
+
+.box
+{
+  margin: 0 auto;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.wrapper
+{
+  position: absolute;
+  left: 0;
+  top: 0;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.info-label {
+  flex: 1;
+  text-align: left;
+}
+
+.info-value {
+  flex: 2;
+  text-align: left;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+}
+
+.button, button, button[type="submit"]
+{
+  margin: 8px 4px 8px 0;
+  font-weight: 600;
+  text-align: left;
+  display: inline-block;
+  background: none;
+  color: #70f77b;
+  text-shadow: 0 0 13px #27d66d;
+  padding: 16px 24px;
+  padding-left: 0px;
+  border: none;
+  cursor: pointer;
+}
+
+.button:hover, button:hover
+{
+  background: none;
+  color: #70f77b;
+}
+
+.button:active, button:active
+{
+  background: none;
+  color: #70f77b;
+}
+
+.button[disabled], button[disabled], button[disabled]:hover
+{
+  background: none;
+  color: #70f77b;
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+button,input,optgroup,select,textarea
+{
+  font-family: inherit;
+  font-size: 100%;
+  line-height: 1.15;
+  margin: 0;
+}
+
+button,input
+{
+  overflow: visible;
+}
+
+button,select
+{
+  text-transform: none;
+}
+
+button,[type="button"],[type="reset"],[type="submit"]
+{
+  -webkit-appearance: button;
+}
