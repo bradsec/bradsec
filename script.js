@@ -5,7 +5,7 @@ function addInfo(infoDiv, label, value) {
 
     const infoLabel = document.createElement('strong');
     infoLabel.classList.add('info-label');
-    infoLabel.textContent = `${label}:`;
+    infoLabel.textContent = `${label}: `;
 
     const infoValue = document.createElement('span');
     infoValue.classList.add('info-value', 'fade');
@@ -19,13 +19,12 @@ function addInfo(infoDiv, label, value) {
     function getIPAddress() {
       return fetch('https://ipapi.co/json')
         .then(response => response.json())
-        // .then(data => data.ip)
         .then((data) => {
             return ipInfoTemplate(data);
         })
         .catch(error => {
           console.error('Error:', error);
-          return 'N/A';
+          return '<div class="info-row"><strong class="info-label">IP Address: </strong><span class="info-value">Service unavailable.</div>';
         });
     }
 
@@ -70,7 +69,7 @@ function addInfo(infoDiv, label, value) {
       const cpuCores = navigator.hardwareConcurrency || 'N/A';
       const visibilityState = document.visibilityState;
 
-      document.getElementById('uaInfo').innerHTML = `<div class="info-row"><strong class="info-label">User-Agent:</strong><span class="info-value copyToClipboard">${userAgent}</span></div>`;
+      document.getElementById('uaInfo').innerHTML = `<div class="info-row"><strong class="info-label">User-Agent: </strong><span class="info-value copyToClipboard">${userAgent}</span></div>`;
       addInfo(infoDiv, 'Platform', platform);
       addInfo(infoDiv, 'Language', language);
       addInfo(infoDiv, 'Screen Width', screenWidth);
@@ -157,3 +156,37 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
   });
 });
+
+// Glitch CSS functions
+// Function to add and remove glitch class
+function addAndRemoveGlitchClass() {
+  // Update glitchableElements
+  glitchableElements = [...document.getElementsByClassName('info-row'), ...document.getElementsByTagName('p')];
+
+  // Select a random element
+  var randomElement = glitchableElements[Math.floor(Math.random() * glitchableElements.length)];
+
+  // Save the original class name
+  var originalClassName = randomElement.className;
+  
+  // Save the original text
+  var originalText = randomElement.textContent;
+
+  // Add the glitch class
+  randomElement.className += ' glitch';
+  
+  // Add the data-text attribute
+  randomElement.setAttribute('data-text', originalText);
+
+  // Remove the glitch class and data-text attribute after a random time between 3 to 10 seconds
+  setTimeout(function() {
+      randomElement.className = originalClassName;
+      randomElement.removeAttribute('data-text');
+  }, Math.random() * (10000 - 3000) + 3000);
+}
+
+// Call the function at random intervals between 3 to 10 seconds
+setInterval(addAndRemoveGlitchClass, Math.random() * (10000 - 3000) + 3000);
+
+
+
