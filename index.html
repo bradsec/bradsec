@@ -1,27 +1,88 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BRADSEC</title>
+    <title>BRADSEC // TERMINAL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
-
 </head>
 <body>
-    <div class="wrapper">
-        <header>
-            <p>BRADSEC</p>
-            </header>
-        <main>
-          <div id="ipInfo"></div>
-          <button id="getIp">> Fetch IP information from ipapi.co?<span class="blink">_</span></button>
-            <p class="fade mt20 mb20">> Detected browser information...</p>
-            <div id="uaInfo"></div>
-            <div id="clientInfo"></div>
-        </main>
-        <div class="scanLine"></div>
-        <footer></footer>
-</div>
-<script src="script.js"></script>
+    <div class="crt">
+        <div class="screen-content">
+            <!-- Top Status Bar -->
+            <div class="status-bar">
+                <span class="status-item"><span class="blink-dot"></span> SYSTEM ACTIVE</span>
+                <span class="status-item" id="datetime"></span>
+                <span class="status-item">SEC_LEVEL: <span class="highlight">PUBLIC</span></span>
+            </div>
+
+            <!-- Main Terminal Container -->
+            <div class="terminal-container">
+
+                <!-- Main Content Area -->
+                <main class="terminal-main">
+                    <!-- IP Information Panel -->
+                    <section class="panel" id="ipPanel">
+                        <div class="panel-header">
+                            <span class="panel-corner tl">┌</span>
+                            <span class="panel-title">─── NETWORK INTEL ───</span>
+                            <span class="panel-corner tr">┐</span>
+                        </div>
+                        <div class="panel-content">
+                            <div id="ipInfo"></div>
+                            <button id="getIp" class="terminal-btn">
+                                <span class="btn-bracket">[</span>
+                                <span class="btn-text">INITIATE IP TRACE</span>
+                                <span class="btn-bracket">]</span>
+                                <span class="blink">_</span>
+                            </button>
+                        </div>
+                        <div class="panel-footer">
+                            <span class="panel-corner bl">└</span>
+                            <span class="panel-line"></span>
+                            <span class="panel-corner br">┘</span>
+                        </div>
+                    </section>
+
+                    <!-- Client Information Panel -->
+                    <section class="panel">
+                        <div class="panel-header">
+                            <span class="panel-corner tl">┌</span>
+                            <span class="panel-title">─── CLIENT FINGERPRINT ───</span>
+                            <span class="panel-corner tr">┐</span>
+                        </div>
+                        <div class="panel-content">
+                            <p class="system-msg">&gt; Scanning client environment<span class="blink">...</span></p>
+                            <div id="uaInfo" class="info-block"></div>
+                            <div id="clientInfo" class="info-grid"></div>
+                        </div>
+                        <div class="panel-footer">
+                            <span class="panel-corner bl">└</span>
+                            <span class="panel-line"></span>
+                            <span class="panel-corner br">┘</span>
+                        </div>
+                    </section>
+                </main>
+
+                <!-- Footer -->
+                <footer class="terminal-footer">
+                    <div class="footer-line"></div>
+                    <p class="footer-text">
+                        <span class="prompt">&gt;</span>
+                        <span class="typing-footer">Connection established. All data is client-side only.</span>
+                    </p>
+                </footer>
+            </div>
+
+            <!-- Decorative Elements -->
+            <div class="scan-line"></div>
+            <div class="flicker-overlay"></div>
+        </div>
+        <div class="crt-overlay"></div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>

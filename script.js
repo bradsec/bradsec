@@ -1,192 +1,298 @@
-// Client info        
+// ==========================================================================
+// BRADSEC Terminal - Client Information & IP Trace
+// ==========================================================================
+
+// Update datetime in status bar
+function updateDateTime() {
+    const now = new Date();
+    const options = {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    };
+    const formatted = now.toLocaleString('en-US', options).toUpperCase();
+    document.getElementById('datetime').textContent = formatted;
+}
+
+// Start datetime updates
+setInterval(updateDateTime, 1000);
+updateDateTime();
+
+// ==========================================================================
+// Client Info Collection
+// ==========================================================================
+
 function addInfo(infoDiv, label, value) {
     const divRow = document.createElement('div');
     divRow.classList.add('info-row');
 
-    const infoLabel = document.createElement('strong');
+    const infoLabel = document.createElement('span');
     infoLabel.classList.add('info-label');
-    infoLabel.textContent = `${label}: `;
+    infoLabel.textContent = `${label}:`;
 
     const infoValue = document.createElement('span');
-    infoValue.classList.add('info-value', 'fade');
-    infoValue.textContent = value;
+    infoValue.classList.add('info-value');
+    infoValue.textContent = value || 'N/A';
 
     divRow.appendChild(infoLabel);
     divRow.appendChild(infoValue);
     infoDiv.appendChild(divRow);
+
+    // Staggered fade-in animation
+    divRow.style.opacity = '0';
+    divRow.style.transform = 'translateX(-10px)';
+    divRow.style.transition = 'all 0.3s ease';
+
+    setTimeout(() => {
+        divRow.style.opacity = '1';
+        divRow.style.transform = 'translateX(0)';
+    }, infoDiv.children.length * 50);
 }
 
-    function getIPAddress() {
-      return fetch('https://ipapi.co/json')
+async function getClientInfo() {
+    const infoDiv = document.getElementById('clientInfo');
+    const userAgent = navigator.userAgent;
+    const platform = navigator.platform;
+    const language = navigator.language;
+    const screenWidth = window.screen.width;
+    const screenHeight = window.screen.height;
+    const colorDepth = window.screen.colorDepth;
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const cpuCores = navigator.hardwareConcurrency || 'Unknown';
+    const cookiesEnabled = navigator.cookieEnabled ? 'Enabled' : 'Disabled';
+    const touchSupport = ('ontouchstart' in window) ? 'Yes' : 'No';
+    const doNotTrack = navigator.doNotTrack === '1' ? 'Enabled' : 'Disabled';
+    const referrer = document.referrer || 'Direct';
+
+    // User Agent in its own block
+    document.getElementById('uaInfo').innerHTML = `
+        <div class="info-row">
+            <span class="info-label">User-Agent:</span>
+            <span class="info-value copyToClipboard">${userAgent}</span>
+        </div>
+    `;
+
+    // Client info grid - only reliable and useful data
+    addInfo(infoDiv, 'Platform', platform);
+    addInfo(infoDiv, 'Language', language);
+    addInfo(infoDiv, 'Screen', `${screenWidth} × ${screenHeight}`);
+    addInfo(infoDiv, 'Color Depth', `${colorDepth}-bit`);
+    addInfo(infoDiv, 'Timezone', timezone);
+    addInfo(infoDiv, 'CPU Cores', cpuCores);
+    addInfo(infoDiv, 'Cookies', cookiesEnabled);
+    addInfo(infoDiv, 'Touch', touchSupport);
+    addInfo(infoDiv, 'Do Not Track', doNotTrack);
+    addInfo(infoDiv, 'Referrer', referrer);
+}
+
+// ==========================================================================
+// IP Address Fetching
+// ==========================================================================
+
+function getIPAddress() {
+    return fetch('https://ipapi.co/json')
         .then(response => response.json())
         .then((data) => {
             return ipInfoTemplate(data);
         })
         .catch(error => {
-          console.error('Error:', error);
-          return '<div class="info-row"><strong class="info-label">IP Address: </strong><span class="info-value">Service unavailable.</div>';
+            console.error('Error:', error);
+            return `
+                <div class="info-row" style="border-left-color: var(--red-alert);">
+                    <span class="info-label" style="color: var(--red-alert);">Error:</span>
+                    <span class="info-value">Service unavailable. Try again later.</span>
+                </div>
+            `;
         });
-    }
+}
 
-    // Template for IP address info data.
-    function ipInfoTemplate(data) {
-    let resultData = "";
-      resultData += '<p class="fade mb20">> Detected IP address information...</p>';
-      if (data.ip) {
-        var ipAddress = data.ip;
-        var ipCountry = data.country_name;
-        var ipCity = data.city;
-        var ipRegion = data.region;
-        var ipProvider = data.org;
-      }
-      resultData += `
-        ${ipAddress ? `<div class="info-row"><strong class="info-label">IP Address: </strong><span class="info-value copyToClipboard">${ipAddress}</div>` : ""}
-        ${ipCity ? `<div class="info-row"><strong class="info-label">City: </strong><span class="info-value fade">${ipCity}</span></div>` : ""}
-        ${ipRegion ? `<div class="info-row"><strong class="info-label">Region: </strong><span class="info-value fade">${ipRegion}</span></div>` : ""}
-        ${ipCountry ? `<div class="info-row"><strong class="info-label">Country: </strong><span class="info-value fade">${ipCountry}</span></div>` : ""}
-        ${ipProvider ? `<div class="info-row"><strong class="info-label">Provider: </strong><span class="info-value fade">${ipProvider}</span></div>` : ""}`;
-      return resultData;
-    }
+function ipInfoTemplate(data) {
+    const fields = [
+        { label: 'IP Address', value: data.ip, copyable: true },
+        { label: 'City', value: data.city },
+        { label: 'Region', value: data.region },
+        { label: 'Country', value: data.country_name },
+        { label: 'Postal', value: data.postal },
+        { label: 'Provider', value: data.org },
+        { label: 'ASN', value: data.asn },
+        { label: 'Latitude', value: data.latitude },
+        { label: 'Longitude', value: data.longitude }
+    ];
 
-    async function getClientInfo() {
-      const infoDiv = document.getElementById('clientInfo');
-      const userAgent = navigator.userAgent;
-      const platform = navigator.platform;
-      const language = navigator.language;
-      const screenWidth = window.screen.width;
-      const screenHeight = window.screen.height;
-      const colorDepth = window.screen.colorDepth;
-      const currentUrl = window.location.href;
-      const referrerUrl = document.referrer;
-      const cookiesEnabled = navigator.cookieEnabled;
-      const onlineStatus = navigator.onLine;
-      const pluginsCount = navigator.plugins.length;
-      const javaEnabled = navigator.javaEnabled();
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const localStorage = !!window.localStorage;
-      const sessionStorage = !!window.sessionStorage;
-      const touchSupport = 'ontouchstart' in window || window.DocumentTouch && document instanceof DocumentTouch;
-      const cpuCores = navigator.hardwareConcurrency || 'N/A';
-      const visibilityState = document.visibilityState;
+    let html = '<p class="system-msg">> IP trace complete<span class="blink">_</span></p>';
+    html += '<div class="info-grid">';
 
-      document.getElementById('uaInfo').innerHTML = `<div class="info-row"><strong class="info-label">User-Agent: </strong><span class="info-value copyToClipboard">${userAgent}</span></div>`;
-      addInfo(infoDiv, 'Platform', platform);
-      addInfo(infoDiv, 'Language', language);
-      addInfo(infoDiv, 'Screen Width', screenWidth);
-      addInfo(infoDiv, 'Screen Height', screenHeight);
-      addInfo(infoDiv, 'Color Depth', colorDepth + ' bits');
-      addInfo(infoDiv, 'Current URL', currentUrl);
-      addInfo(infoDiv, 'Referrer URL', referrerUrl);
-      addInfo(infoDiv, 'Cookies Enabled', cookiesEnabled);
-      addInfo(infoDiv, 'Online Status', onlineStatus);
-      addInfo(infoDiv, 'Number of Plugins', pluginsCount);
-      addInfo(infoDiv, 'Java Enabled', javaEnabled);
-      addInfo(infoDiv, 'Timezone', timezone);
-      addInfo(infoDiv, 'Local Storage Support', localStorage);
-      addInfo(infoDiv, 'Session Storage Support', sessionStorage);
-      addInfo(infoDiv, 'Touch Support', touchSupport);
-      addInfo(infoDiv, 'CPU Cores', cpuCores);
-      addInfo(infoDiv, 'Page Visibility', visibilityState);
-    }
-
-    document.getElementById('getIp').addEventListener('click', async function() {
-    const button = document.getElementById('getIp');
-    button.disabled = true; // Disable the button
-
-    const getIpInfo = await getIPAddress();
-    document.getElementById('ipInfo').innerHTML = `${getIpInfo}`;
-    button.remove();
-
-    const ipInfoDiv = document.getElementById('ipInfo');
-    ipInfoDiv.style.display = 'block';
+    fields.forEach(field => {
+        if (field.value) {
+            const copyClass = field.copyable ? ' copyToClipboard' : '';
+            html += `
+                <div class="info-row">
+                    <span class="info-label">${field.label}:</span>
+                    <span class="info-value${copyClass}">${field.value}</span>
+                </div>
+            `;
+        }
     });
 
-    getClientInfo();
-
-    // Copy to clipboard
-    function fallbackCopyTextToClipboard(text) {
-  var textArea = document.createElement("textarea");
-  textArea.value = text;
-
-  // Workaround for some mobile device copy to clipboard issues
-  // Ensure the textarea element is not visible.
-  textArea.style.position='fixed';
-  textArea.style.top=0;
-  textArea.style.left=0;
-  textArea.style.width='2em';
-  textArea.style.height='2em';
-  textArea.style.padding=0;
-  textArea.style.border='none';
-  textArea.style.outline='none';
-  textArea.style.boxShadow='none';
-  textArea.style.background='transparent';
-
-  document.body.appendChild(textArea);
-  textArea.focus();
-  textArea.select();
-
-  try {
-    var successful = document.execCommand('copy');
-    var msg = successful ? 'successful' : 'unsuccessful';
-    console.log('Fallback: Copying text command was ' + msg);
-  } catch (err) {
-    console.error('Fallback: Oops, unable to copy', err);
-  }
-
-  document.body.removeChild(textArea);
+    html += '</div>';
+    return html;
 }
 
-// Main copy to clipboard function
-document.addEventListener('DOMContentLoaded', (event) => {
-  document.body.addEventListener('click', (event) => {
-    if (event.target.matches('.copyToClipboard')) {
-      const text = event.target.textContent;
-      const originalText = event.target.textContent;
-      event.target.textContent = 'Copied';
-      setTimeout(() => {
-        event.target.textContent = originalText;
-      }, 1000);
-      if (!navigator.clipboard) {
-        fallbackCopyTextToClipboard(text);
-        return;
-      }
-      navigator.clipboard.writeText(text).then(() => {}, (err) => {
-        console.error('Could not copy text: ', err);
-      });
-    }
-  });
+// IP Button Handler
+document.getElementById('getIp').addEventListener('click', async function() {
+    const button = this;
+    const btnText = button.querySelector('.btn-text');
+    const originalText = btnText.textContent;
+
+    // Disable and show loading
+    button.disabled = true;
+    btnText.textContent = 'TRACING';
+
+    // Animated dots
+    let dots = 0;
+    const loadingInterval = setInterval(() => {
+        dots = (dots + 1) % 4;
+        btnText.textContent = 'TRACING' + '.'.repeat(dots);
+    }, 300);
+
+    const getIpInfo = await getIPAddress();
+
+    clearInterval(loadingInterval);
+
+    // Fade out button, fade in results
+    button.style.transition = 'all 0.3s ease';
+    button.style.opacity = '0';
+
+    setTimeout(() => {
+        button.remove();
+        const ipInfoDiv = document.getElementById('ipInfo');
+        ipInfoDiv.innerHTML = getIpInfo;
+        ipInfoDiv.style.opacity = '0';
+        ipInfoDiv.style.display = 'block';
+
+        setTimeout(() => {
+            ipInfoDiv.style.transition = 'opacity 0.5s ease';
+            ipInfoDiv.style.opacity = '1';
+        }, 50);
+    }, 300);
 });
 
-// Glitch CSS functions
-// Function to add and remove glitch class
-function addAndRemoveGlitchClass() {
-  // Update glitchableElements
-  glitchableElements = [...document.getElementsByClassName('info-row'), ...document.getElementsByTagName('p')];
+// Initialize client info on load
+getClientInfo();
 
-  // Select a random element
-  var randomElement = glitchableElements[Math.floor(Math.random() * glitchableElements.length)];
+// ==========================================================================
+// Copy to Clipboard
+// ==========================================================================
 
-  // Save the original class name
-  var originalClassName = randomElement.className;
-  
-  // Save the original text
-  var originalText = randomElement.textContent;
+function fallbackCopyTextToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.cssText = 'position:fixed;top:0;left:0;width:2em;height:2em;padding:0;border:none;outline:none;box-shadow:none;background:transparent;';
 
-  // Add the glitch class
-  randomElement.className += ' glitch';
-  
-  // Add the data-text attribute
-  randomElement.setAttribute('data-text', originalText);
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
 
-  // Remove the glitch class and data-text attribute after a random time between 3 to 10 seconds
-  setTimeout(function() {
-      randomElement.className = originalClassName;
-      randomElement.removeAttribute('data-text');
-  }, Math.random() * (10000 - 3000) + 3000);
+    try {
+        document.execCommand('copy');
+    } catch (err) {
+        console.error('Fallback: Unable to copy', err);
+    }
+
+    document.body.removeChild(textArea);
 }
 
-// Call the function at random intervals between 3 to 10 seconds
-setInterval(addAndRemoveGlitchClass, Math.random() * (10000 - 3000) + 3000);
+document.addEventListener('DOMContentLoaded', () => {
+    document.body.addEventListener('click', (event) => {
+        if (event.target.matches('.copyToClipboard')) {
+            const text = event.target.textContent;
+            const originalText = text;
 
+            // Visual feedback
+            event.target.textContent = '[ COPIED ]';
+            event.target.style.color = 'var(--green-bright)';
 
+            setTimeout(() => {
+                event.target.textContent = originalText;
+                event.target.style.color = '';
+            }, 1500);
 
+            if (!navigator.clipboard) {
+                fallbackCopyTextToClipboard(text);
+                return;
+            }
+
+            navigator.clipboard.writeText(text).catch(err => {
+                console.error('Could not copy text:', err);
+            });
+        }
+    });
+});
+
+// ==========================================================================
+// Glitch Effect
+// ==========================================================================
+
+let glitchableElements = [];
+
+function addAndRemoveGlitchClass() {
+    // Update glitchable elements
+    glitchableElements = [
+        ...document.querySelectorAll('.info-row'),
+        ...document.querySelectorAll('.system-msg'),
+        ...document.querySelectorAll('.panel-title')
+    ];
+
+    if (glitchableElements.length === 0) return;
+
+    // Select random element
+    const randomElement = glitchableElements[Math.floor(Math.random() * glitchableElements.length)];
+    const originalClassName = randomElement.className;
+    const originalText = randomElement.textContent;
+
+    // Add glitch
+    randomElement.classList.add('glitch');
+    randomElement.setAttribute('data-text', originalText);
+
+    // Remove after random duration
+    const duration = Math.random() * 2000 + 500;
+    setTimeout(() => {
+        randomElement.className = originalClassName;
+        randomElement.removeAttribute('data-text');
+    }, duration);
+}
+
+// Trigger glitch at random intervals
+function scheduleGlitch() {
+    const delay = Math.random() * 8000 + 3000;
+    setTimeout(() => {
+        addAndRemoveGlitchClass();
+        scheduleGlitch();
+    }, delay);
+}
+
+// Start glitch effects after a delay
+setTimeout(scheduleGlitch, 2000);
+
+// ==========================================================================
+// Boot Sequence Animation (optional enhancement)
+// ==========================================================================
+
+function typeWriter(element, text, speed = 50) {
+    let i = 0;
+    element.textContent = '';
+
+    function type() {
+        if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+        }
+    }
+
+    type();
+}

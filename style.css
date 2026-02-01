@@ -1,333 +1,637 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  -webkit-font-smoothing: none;
+/* ==========================================================================
+   BRADSEC Terminal - Retrofuturistic CRT Interface
+   ========================================================================== */
+
+:root {
+    /* Phosphor Green Palette */
+    --green-bright: #4ade80;
+    --green-primary: #22c55e;
+    --green-dim: #16a34a;
+    --green-dark: #052e16;
+    --green-glow: rgba(74, 222, 128, 0.6);
+
+    /* Accent Colors - kept green for terminal authenticity */
+    --accent: #86efac;
+    --accent-glow: rgba(134, 239, 172, 0.5);
+    --red-alert: #ef4444;
+
+    /* Background */
+    --bg-dark: #030712;
+    --bg-screen: #010a01;
+
+    /* Typography */
+    --font-display: 'VT323', monospace;
+    --font-mono: 'Share Tech Mono', 'Courier New', monospace;
 }
 
-html {
-  min-height: 100%;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
 }
 
 body {
-  background-color: black;
-  background-image: linear-gradient(rgba(31, 31, 31, 0.8), #222222 10%);
-  background-size: 100% 2px, 3px 100%;
-  height: 100vh;
-  margin: 0;
-  color: #70f77b;
-  font-family: Inconsolata, 'Courier New', monospace;
-  font-size: 14px;
-  line-height: 1.4em;
-  text-shadow: 0 0 13px #27d66d;
-  filter: blur(0.5px);
+    background: var(--bg-dark);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.6;
 }
 
-body::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15) 3px, transparent 3px, transparent 6px);
-  pointer-events: none;
-  animation: flicker 0.15s infinite;
+/* ==========================================================================
+   CRT Screen Effect
+   ========================================================================== */
+
+.crt {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg-screen);
 }
 
-a, a:link, a:active, a:visited
-{
-  color: #70f77b;
-  text-decoration: underline;
-  opacity: 1;
+/* CRT Curvature & Vignette */
+.crt-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse at center, transparent 0%, transparent 60%, rgba(0, 0, 0, 0.4) 100%);
+    z-index: 100;
 }
 
-a:hover
-{
-  color: #70f77b;
-  opacity: 1;
+.crt::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        transparent 50%,
+        rgba(0, 0, 0, 0.03) 51%
+    );
+    background-size: 100% 3px;
+    pointer-events: none;
+    z-index: 90;
 }
 
-hr
-{
-  margin: 20px 0 10px 0;
-  border: 0;
-  border-top: 1px dashed #70f77b;
-  opacity: 0.65;
+.screen-content {
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+    color: var(--green-primary);
+    text-shadow:
+        0 0 5px var(--green-glow),
+        0 0 10px var(--green-glow),
+        0 0 20px rgba(34, 197, 94, 0.3);
 }
+
+/* Custom Scrollbar */
+.screen-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.screen-content::-webkit-scrollbar-track {
+    background: var(--bg-screen);
+    border-left: 1px solid var(--green-dark);
+}
+
+.screen-content::-webkit-scrollbar-thumb {
+    background: var(--green-dim);
+    border: 1px solid var(--green-primary);
+}
+
+/* ==========================================================================
+   Scan Line Animation - Realistic CRT
+   ========================================================================== */
+
+.scan-line {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow:
+        0 1px 0 rgba(0, 0, 0, 0.1),
+        0 -1px 0 rgba(74, 222, 128, 0.03);
+    pointer-events: none;
+    z-index: 80;
+    animation: scanMove 6s linear infinite;
+    opacity: 0.8;
+}
+
+@keyframes scanMove {
+    0% { top: -2px; }
+    100% { top: 100%; }
+}
+
+/* Flicker Overlay */
+.flicker-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 85;
+    animation: flicker 8s infinite;
+    opacity: 0;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+@keyframes flicker {
+    0%, 95%, 100% { opacity: 0; }
+    96% { opacity: 0.02; }
+    97% { opacity: 0; }
+    98% { opacity: 0.015; }
+}
+
+/* ==========================================================================
+   Status Bar
+   ========================================================================== */
+
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 20px;
+    background: linear-gradient(to bottom, var(--green-dark), transparent);
+    border-bottom: 1px solid var(--green-dim);
+    font-family: var(--font-display);
+    font-size: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.8;
+}
+
+.blink-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--green-bright);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--green-glow);
+    animation: dotBlink 1s ease-in-out infinite;
+}
+
+@keyframes dotBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.highlight {
+    color: var(--accent);
+    text-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* ==========================================================================
+   Terminal Container
+   ========================================================================== */
+
+.terminal-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+/* ==========================================================================
+   Header & ASCII Logo
+   ========================================================================== */
+
+.terminal-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.ascii-logo {
+    font-family: monospace;
+    font-size: clamp(8px, 1.5vw, 14px);
+    line-height: 1.15;
+    letter-spacing: 0;
+    color: var(--green-bright);
+    text-shadow:
+        0 0 5px var(--green-glow),
+        0 0 15px var(--green-glow),
+        0 0 30px rgba(74, 222, 128, 0.4);
+    margin: 0 0 20px 0;
+    animation: logoGlow 3s ease-in-out infinite alternate;
+    white-space: pre;
+    overflow: hidden;
+}
+
+@keyframes logoGlow {
+    0% {
+        filter: brightness(1);
+        text-shadow:
+            0 0 5px var(--green-glow),
+            0 0 15px var(--green-glow),
+            0 0 30px rgba(74, 222, 128, 0.4);
+    }
+    100% {
+        filter: brightness(1.2);
+        text-shadow:
+            0 0 10px var(--green-glow),
+            0 0 25px var(--green-glow),
+            0 0 50px rgba(74, 222, 128, 0.6);
+    }
+}
+
+.tagline {
+    font-family: var(--font-display);
+    font-size: 24px;
+    letter-spacing: 4px;
+    color: var(--green-dim);
+    opacity: 0;
+    animation: fadeIn 1s ease-out 0.5s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 0.7; }
+}
+
+/* ==========================================================================
+   Panel Styling
+   ========================================================================== */
+
+.panel {
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.panel-header,
+.panel-footer {
+    display: flex;
+    align-items: center;
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--green-dim);
+}
+
+.panel-corner {
+    color: var(--green-primary);
+    font-size: 20px;
+}
+
+.panel-title {
+    padding: 0 15px;
+    letter-spacing: 3px;
+    white-space: nowrap;
+}
+
+.panel-header::before,
+.panel-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--green-dim), transparent);
+}
+
+.panel-header::after {
+    background: linear-gradient(to left, var(--green-dim), transparent);
+}
+
+.panel-content {
+    padding: 20px 15px;
+    border-left: 1px dashed var(--green-dark);
+    border-right: 1px dashed var(--green-dark);
+    margin: 0 8px;
+    background: linear-gradient(
+        to bottom,
+        rgba(5, 46, 22, 0.2),
+        transparent,
+        rgba(5, 46, 22, 0.2)
+    );
+}
+
+.panel-footer {
+    opacity: 0.5;
+}
+
+.panel-line {
+    flex: 1;
+    height: 1px;
+    background: var(--green-dark);
+    margin: 0 5px;
+}
+
+/* ==========================================================================
+   Button Styling
+   ========================================================================== */
+
+.terminal-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid var(--green-dim);
+    color: var(--green-primary);
+    font-family: var(--font-display);
+    font-size: 20px;
+    letter-spacing: 2px;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-shadow: 0 0 10px var(--green-glow);
+    position: relative;
+    overflow: hidden;
+}
+
+.terminal-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(74, 222, 128, 0.1),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.terminal-btn:hover {
+    background: rgba(74, 222, 128, 0.1);
+    border-color: var(--green-primary);
+    box-shadow:
+        0 0 20px rgba(74, 222, 128, 0.3),
+        inset 0 0 20px rgba(74, 222, 128, 0.1);
+}
+
+.terminal-btn:hover::before {
+    left: 100%;
+}
+
+.terminal-btn:active {
+    transform: scale(0.98);
+}
+
+.terminal-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    border-style: dashed;
+}
+
+.terminal-btn:disabled:hover {
+    background: transparent;
+    box-shadow: none;
+}
+
+.btn-bracket {
+    color: var(--accent);
+    text-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* ==========================================================================
+   Blink Animation
+   ========================================================================== */
 
 .blink {
-  content: "";
-  display: inline-block;
-  width: 10px;
-  height: 14px;
-  -webkit-animation: blink 1s step-end infinite;
-  animation: blink 1s step-end infinite;
-  animation-delay: 8s;
-  -webkit-animation-delay: 8s;
-}
-
-@-webkit-keyframes blink {
-  0% { opacity: 1.0; }
-  50% { opacity: 0.0; }
-  100% { opacity: 1.0; }
+    animation: blink 1s step-end infinite;
 }
 
 @keyframes blink {
-  0% { opacity: 1.0; }
-  50% { opacity: 0.0; }
-  100% { opacity: 1.0; }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }
 
-header, main, footer {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 1200px;
-  padding: 15px;
+/* ==========================================================================
+   Info Display
+   ========================================================================== */
+
+.system-msg {
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--green-dim);
+    margin-bottom: 15px;
+    opacity: 0.8;
 }
 
-header {
-  font-weight: 600;
-  padding-bottom: 0;
+.info-block {
+    margin-bottom: 20px;
+    padding: 10px;
+    background: rgba(5, 46, 22, 0.3);
+    border-left: 3px solid var(--green-primary);
 }
 
-main {
-  border: 0px solid red;
-}
-
-footer {
-  padding-top: 0;
-}
-
-.bold
-{
-  font-weight: 600;
-}
-
-.small
-{
-  font-size: 0.8em;
-}
-
-.fade
-{
-  opacity: 0.65;
-}
-
-.mt20 {
-  margin-top: 20px;
-}
-
-.mb20 {
-  margin-bottom: 20px;
-}
-
-.copyToClipboard {
-  display: inline-block;
-}
-
-.rev {
-  padding: 5px 8px;
-  background-color: #70f77b;
-  color: #000f00;
-  opacity: 0.65;
-}
-
-.box
-{
-  margin: 0 auto;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.wrapper
-{
-  position: absolute;
-  left: 0;
-  top: 0;
-  min-height: 100vh;
-  width: 100%;
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 8px;
 }
 
 .info-row {
-  margin-bottom: 5px;
+    display: flex;
+    padding: 6px 10px;
+    background: rgba(5, 46, 22, 0.2);
+    border-left: 2px solid var(--green-dark);
+    transition: all 0.2s ease;
+}
+
+.info-row:hover {
+    background: rgba(74, 222, 128, 0.1);
+    border-left-color: var(--green-primary);
 }
 
 .info-label {
-  text-align: left;
+    color: var(--green-bright);
+    font-family: var(--font-display);
+    font-size: 16px;
+    min-width: 140px;
+    flex-shrink: 0;
 }
 
 .info-value {
-  text-align: left;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  -ms-word-break: break-all;
-  word-break: break-all;
-  word-break: break-word;
+    color: var(--green-dim);
+    font-size: 13px;
+    word-break: break-all;
+    opacity: 0.8;
 }
 
-.button, button, button[type="submit"]
-{
-  margin: 8px 4px 8px 0;
-  font-weight: 600;
-  text-align: left;
-  display: inline-block;
-  background: none;
-  color: #70f77b;
-  text-shadow: 0 0 13px #27d66d;
-  padding: 16px 24px;
-  padding-left: 0px;
-  border: none;
-  cursor: pointer;
+.info-value.copyToClipboard {
+    cursor: pointer;
+    color: var(--accent);
+    text-shadow: 0 0 5px var(--accent-glow);
+    transition: all 0.2s ease;
 }
 
-.button:hover, button:hover
-{
-  background: none;
-  color: #70f77b;
+.info-value.copyToClipboard:hover {
+    color: var(--green-bright);
+    text-shadow: 0 0 15px var(--green-glow);
 }
 
-.button:active, button:active
-{
-  background: none;
-  color: #70f77b;
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.terminal-footer {
+    margin-top: 40px;
+    padding-top: 20px;
 }
 
-.button[disabled], button[disabled], button[disabled]:hover
-{
-  background: none;
-  color: #70f77b;
-  opacity: 0.65;
-  cursor: not-allowed;
+.footer-line {
+    height: 1px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        var(--green-dim),
+        transparent
+    );
+    margin-bottom: 20px;
 }
 
-button,input,optgroup,select,textarea
-{
-  font-family: inherit;
-  font-size: 100%;
-  line-height: 1.15;
-  margin: 0;
+.footer-text {
+    font-family: var(--font-display);
+    font-size: 16px;
+    color: var(--green-dim);
+    opacity: 0.6;
+    display: flex;
+    gap: 10px;
 }
 
-button,input
-{
-  overflow: visible;
+.prompt {
+    color: var(--green-primary);
 }
 
-button,select
-{
-  text-transform: none;
-}
-
-button,[type="button"],[type="reset"],[type="submit"]
-{
-  -webkit-appearance: button;
-}
-
-@keyframes glitch {
-  0%, 100% {
-    clip-path: inset(10px 0 14px);
-    transform: skew(0);
-  }
-  7%, 13% {
-    clip-path: inset(10px 0 14px);
-    transform: skew(-2deg);
-  }
-  10%, 21% {
-    clip-path: inset(10px 0);
-    transform: skew(2deg);
-  }
-  23%, 33% {
-    clip-path: inset(8px 0 10px);
-    transform: skew(-2deg);
-  }
-  38%, 42% {
-    clip-path: inset(8px 0 10px);
-    transform: skew(2deg);
-  }
-  50% {
-    clip-path: inset(6px 0 9px);
-    transform: skew(0);
-  }
-}
+/* ==========================================================================
+   Glitch Effect - Transparency flicker
+   ========================================================================== */
 
 .glitch {
-  position: relative;
+    animation: glitchFlicker 0.15s steps(1) infinite;
 }
 
-.glitch::before,
-.glitch::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+@keyframes glitchFlicker {
+    0%, 100% { opacity: 1; }
+    25% { opacity: 0.8; }
+    50% { opacity: 1; }
+    75% { opacity: 0.85; }
 }
 
-.glitch::before {
-  left: 1px;
-  text-shadow: -1px 0 blue;
-  animation: glitch 1s infinite linear alternate-reverse;
-  clip-path: auto;
+/* ==========================================================================
+   IP Info Specific Styles
+   ========================================================================== */
+
+#ipInfo .info-row {
+    background: rgba(251, 191, 36, 0.05);
+    border-left-color: var(--accent);
 }
 
-.glitch::after {
-  left: -1px;
-  text-shadow: -1px 0 red;
-  animation: glitch 3s infinite linear alternate-reverse;
-  clip-path: auto;
+#ipInfo .info-label {
+    color: var(--accent);
 }
 
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
 
-/* 
-Credit flicker and scan line animations
-https://codepen.io/rafael_madureira/pen/Rwrqvbe 
-*/
+@media (max-width: 768px) {
+    .status-bar {
+        flex-direction: column;
+        gap: 5px;
+        padding: 10px;
+        font-size: 12px;
+    }
 
-@keyframes flicker {
-  0%    { opacity: 0.27861; }
-  5%    { opacity: 0.34769; }
-  10%   { opacity: 0.23604; }
-  15%   { opacity: 0.90626; }
-  20%   { opacity: 0.18128; }
-  25%   { opacity: 0.83891; }
-  30%   { opacity: 0.65583; }
-  35%   { opacity: 0.67807; }
-  40%   { opacity: 0.26559; }
-  45%   { opacity: 0.84693; }
-  50%   { opacity: 0.96019; }
-  55%   { opacity: 0.08594; }
-  60%   { opacity: 0.20313; }
-  65%   { opacity: 0.71988; }
-  70%   { opacity: 0.53455; }
-  75%   { opacity: 0.37288; }
-  80%   { opacity: 0.71428; }
-  85%   { opacity: 0.70419; }
-  90%   { opacity: 0.70030; }
-  95%   { opacity: 0.36108; }
-  100%  { opacity: 0.24387; }
+    .ascii-logo {
+        font-size: 5px;
+    }
+
+    .tagline {
+        font-size: 16px;
+        letter-spacing: 2px;
+    }
+
+    .terminal-container {
+        padding: 15px 10px;
+    }
+
+    .panel-title {
+        font-size: 14px;
+        letter-spacing: 1px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .info-label {
+        min-width: 100px;
+        font-size: 14px;
+    }
+
+    .info-value {
+        font-size: 12px;
+    }
+
+    .terminal-btn {
+        font-size: 16px;
+        padding: 10px 16px;
+    }
 }
 
-.scanLine {
-  width: 100%;
-  height: 100px;
-  z-index: 8;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%,
-    rgba(255, 255, 255, 0.2) 10%,
-    rgba(0, 0, 0, 0.1) 100%);
-  opacity: 0.1;
-  position: absolute;
-  bottom: 100%;
-  pointer-events: none;
-  animation: scanLine 9s linear infinite;
+@media (max-width: 480px) {
+    .ascii-logo {
+        display: none;
+    }
+
+    .terminal-header::before {
+        content: 'BRADSEC';
+        font-family: var(--font-display);
+        font-size: 48px;
+        letter-spacing: 8px;
+        color: var(--green-bright);
+        text-shadow:
+            0 0 10px var(--green-glow),
+            0 0 20px var(--green-glow);
+        display: block;
+        margin-bottom: 10px;
+    }
 }
 
-@keyframes scanLine {
-  0%    { bottom: 100%; }
-  80%   { bottom: 100%; }
-  100%  { bottom: 0%; }
+/* ==========================================================================
+   Selection Styling
+   ========================================================================== */
+
+::selection {
+    background: var(--green-primary);
+    color: var(--bg-screen);
+    text-shadow: none;
+}
+
+/* ==========================================================================
+   Link Styling
+   ========================================================================== */
+
+a {
+    color: var(--green-bright);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--green-dim);
+    transition: all 0.2s ease;
+}
+
+a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    text-shadow: 0 0 10px var(--accent-glow);
 }
